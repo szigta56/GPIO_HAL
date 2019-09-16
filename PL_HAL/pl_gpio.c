@@ -79,7 +79,10 @@ status PL_Gpio_Init (const PL_GPIO_CFG_t *const Config)
 
 status PL_Gpio_Write(PL_PORT_REG_t *port, uint8_t channel, uint8_t pinNum,Pl_Pin_state_t value )
 {
-
+	if(!ASSERT_PORT(port)) 				return INCORRECT_PORT_ADRESSS;
+	else if (!ASSERT_PIN(pinNum)) 		return INCORRECT_PIN;
+	else if (!ASSERT_CHANNEL(channel))	return INCORRECT_CHANNEL;
+	else if (!ASSERT_VALUE(value))		return INCORRECT_VALUE;
 
     switch(channel)
     {
