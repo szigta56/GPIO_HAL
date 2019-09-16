@@ -11,7 +11,28 @@
 #include "../PL_HAL/pl_gpio.h"
 #include "../PS_HAL/psgpio.h"
 
+/* 
+    PL_RED_LED      on PORT1, Channel : CH2 PinNum: PIN3
+    PL_GREEN_LED    on PORT1, Channel : CH1 PinNum: PIN3
+    PL_BUTTON       on PORT2, Channel : CH1 PinNum: PIN3 
 
+    PS_RED_LED      on PORT0, Channel : CH2 PinNum: PIN1
+    PS_GREEN_LED    on PORT0, Channel : CH2 PinNum: PIN2
+    PS_BUTTON       on PORT0, Channel : CH1 PinNum: PIN0
+
+*/
+
+#define PS_PORT_NUM  1u
+#define PL_PORT_NUM  2u
+
+#define PORT0 PS_GPIO
+#define PORT1 PL_PORT0
+#define PORT2 PL_PORT1
+
+#define PIN0 PS_PIN0
+#define PIN1 PS_PIN20
+#define PIN2 PS_PIN21
+#define PIN3 PL_PIN0
 
 typedef enum
 {
@@ -25,15 +46,60 @@ typedef enum
     PL_TYPE_GPIO
 }Gpio_type_t;
 
-void Gpio_Init();
-void Gpio_Write(void *port,Gpio_type_t type,uint8_t channel, uint8_t pinNum, uint8_t value);
-uint8_t Gpio_Read(void *port,Gpio_type_t type,uint8_t channel, uint8_t pinNum);
-void Gpio_SetDirection(void *port,Gpio_type_t type,uint8_t channel, uint8_t pinNum, uint8_t direction);
+/*typedef enum
+{
+    PIN0,
+    PIN1,
+    PIN2,
+    PIN3,
+    PIN4,
+    PIN5,
+    PIN6,
+    PIN7,
+    PIN8,
+    PIN9,
+    PIN10,
+    PIN11,
+    PIN12,
+    PIN13,
+    PIN14,
+    PIN15,
+    PIN16,
+    PIN17,
+    PIN18,
+    PIN19,
+    PIN20,
+    PIN21,
+    PIN22,
+    PIN23,
+    PIN24,
+    PIN25,
+    PIN26,
+    PIN27,
+    PIN28,
+    PIN29,
+    PIN30,
+    PIN31
+}Pin_num_t; */
 
-void Gpio_InterruptEnable(void *port,Gpio_type_t type,uint8_t channel,uint8_t pinNum);
-void Gpio_InterruptDisable(void* port,Gpio_type_t,uint8_t channel,uint8_t pinNum);
-void Gpio_ClearInterrupt(void* port,Gpio_type_t,uint8_t channel,uint8_t pinNum);
+typedef enum 
+{
+    CH1,
+    CH2
+}Channel_num_t;
 
+status Gpio_Init();
+status Gpio_Write(void *port,Channel_num_t channel, uint8_t pinNum, uint8_t value);
+uint8_t Gpio_Read(void *port,Channel_num_t channel, uint8_t pinNum);
+status Gpio_SetDirection(void *port,Channel_num_t channel, uint8_t pinNum, Dir_mode_t direction);
 
+void Gpio_InterruptEnable(void *port,Channel_num_t channel,uint8_t pinNum);
+void Gpio_InterruptDisable(void* port,Channel_num_t channel,uint8_t pinNum);
+void Gpio_ClearInterrupt(void* port,Channel_num_t channel,uint8_t pinNum);
+
+void Gpio_RegisterWrite(uint32_t Address, uint32_t Value);
+uint32_t Gpio_RegisterRead(uint32_t Address);
+
+Gpio_type_t GetPortType(void *port);
 
 #endif /* SRC_GPIO_HAL_MYGPIO_H_ */
