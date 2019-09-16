@@ -156,7 +156,7 @@ typedef struct
 typedef struct 
 {
     PS_PORT_REG_t*     Port;
-    Ps_Bank_num_t		Channel;
+    Ps_Bank_num_t	   Channel;
     Ps_Pin_num_t       Pin;
     Ps_Pin_mode_t      Direction;
     Ps_Pin_state_t     State;
