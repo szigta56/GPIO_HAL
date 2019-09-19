@@ -17,13 +17,13 @@ typedef int8_t status;
 
 //**********************************ERROR CODES********************************
 
-#define  NO_ERROR                    0u
-#define  INCORRECT_PIN              -1u
-#define  INCORRECT_CHANNEL          -2u
-#define  INCORRECT_PORT_ADDRESS     -3u
-#define  INCORRECT_INTERRUPT_TYPE   -4u
-#define  INCORRECT_DIRECTION        -5u
-#define  INCORRECT_VALUE            -6u
+#define  NO_ERROR                   ( 0)
+#define  INCORRECT_PIN              (-1)
+#define  INCORRECT_CHANNEL          (-2)
+#define  INCORRECT_PORT_ADDRESS     (-3)
+#define  INCORRECT_INTERRUPT_TYPE   (-4)
+#define  INCORRECT_DIRECTION        (-5)
+#define  INCORRECT_VALUE            (-6)
 
 //**********************************ASSERT MACROS FOR ERROR HANDLING********************************
 
