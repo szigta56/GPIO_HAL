@@ -8,6 +8,7 @@
 #ifndef SRC_GPIO_HAL_MYGPIO_H_
 #define SRC_GPIO_HAL_MYGPIO_H_
 
+
 #include "../PL_HAL/pl_gpio.h"
 #include "../PS_HAL/psgpio.h"
 
@@ -88,14 +89,25 @@ typedef enum
     CH2
 }Channel_num_t;
 
+typedef enum
+{
+    INTR_NONE,
+    INTR_RISING,
+    INTR_FALLING,
+    INTR_BOTH,
+    INTR_LEVEL,
+    INTR_MODE_MAX
+}Intr_type_t;
+
 status Gpio_Init();
 status Gpio_Write(void *port,Channel_num_t channel, uint8_t pinNum, uint8_t value);
 uint8_t Gpio_Read(void *port,Channel_num_t channel, uint8_t pinNum);
 status Gpio_SetDirection(void *port,Channel_num_t channel, uint8_t pinNum, Dir_mode_t direction);
 
-void Gpio_InterruptEnable(void *port,Channel_num_t channel,uint8_t pinNum);
-void Gpio_InterruptDisable(void* port,Channel_num_t channel,uint8_t pinNum);
-void Gpio_ClearInterrupt(void* port,Channel_num_t channel,uint8_t pinNum);
+status Gpio_InterruptEnable(void *port,Channel_num_t channel,uint8_t pinNum);
+status Gpio_InterruptDisable(void *port,Channel_num_t channel,uint8_t pinNum);
+status Gpio_ClearInterrupt(void *port,Channel_num_t channel,uint8_t pinNum);
+status Gpio_SetInterruptType(void *port,Channel_num_t channel,uint8_t pinNum,Intr_type_t type);
 
 void Gpio_RegisterWrite(uint32_t Address, uint32_t Value);
 uint32_t Gpio_RegisterRead(uint32_t Address);

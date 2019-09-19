@@ -5,7 +5,7 @@
  *      Author: szigta56
  */
 
-#include "myassert.h"
+
 #include "mygpio.h"
 
 static uint32_t volatile *const PS_Ports[]=
@@ -22,119 +22,161 @@ static uint32_t volatile *const PL_Ports[]=
 
 status Gpio_Init()
 {
-    status errorStatus;
+    status errorStatus,ret;
 
     errorStatus = PS_Gpio_Init(PS_Gpio_GetConfig());
-    if(errorStatus) return errorStatus;
+    if(errorStatus) ret = errorStatus;
+    else 
+    {
+        errorStatus = PL_Gpio_Init(PL_Gpio_GetConfig());
+        if(errorStatus) ret = errorStatus;
+        else ret = NO_ERROR;
+    }
 
-    errorStatus = PL_Gpio_Init(PL_Gpio_GetConfig());
-    if(errorStatus) return errorStatus;
-
-    else            return NO_ERROR;
+    return ret;
 }
 
 status Gpio_Write(void *port,uint8_t channel, uint8_t pinNum, uint8_t value)
 {   
-    status errorStatus;
+    status errorStatus,ret;
     Gpio_type_t type;
     type = GetPortType(port);
     
     if (type==PL_TYPE_GPIO)   
       { 
           errorStatus = PL_Gpio_Write(port,channel,pinNum,value);
-          return errorStatus;
+          ret = errorStatus;
       }
     else if(type==PS_TYPE_GPIO)
     {
          errorStatus = PS_Gpio_Write(port,channel,pinNum,value);  
-         return errorStatus;
+         ret = errorStatus;
     }   
-    else  return INCORRECT_PORT_ADRESSS;
+    else  ret = INCORRECT_PORT_ADDRESS;
 
+    return ret;
 }
 
 uint8_t Gpio_Read(void *port,Channel_num_t channel, uint8_t pinNum)
 {
-    
+    uint8_t ret;
     Gpio_type_t type;
     type = GetPortType(port);
 
     if (type==PL_TYPE_GPIO)
     {
-       return PL_Gpio_Read(port,channel,pinNum);
+        ret = PL_Gpio_Read(port,channel,pinNum);
     }
     else if(type==PS_TYPE_GPIO)
     {
-       return PS_Gpio_Read(port,channel,pinNum);
+        ret = PS_Gpio_Read(port,channel,pinNum);
     }
-    else return INCORRECT_PORT_ADRESSS;
+    else ret = INCORRECT_PORT_ADDRESS;
+
+    return ret;
 }
 
 status Gpio_SetDirection(void *port,Channel_num_t channel, uint8_t pinNum, uint8_t direction)
 {
-    status errorStatus;
+    status errorStatus,ret;
     Gpio_type_t type;
     type = GetPortType(port);
 
     if (type==PL_TYPE_GPIO)
     {
         errorStatus = PL_Gpio_SetDirection(port,channel,pinNum,direction);
-        return errorStatus;
+        ret = errorStatus;
     }
     else if(type==PS_TYPE_GPIO)
     {
         errorStatus = PS_Gpio_SetDirection(port,channel,pinNum,direction);
-        return errorStatus;
+        ret = errorStatus;
     }
-     else  return INCORRECT_PORT_ADRESSS;
+    else  ret = INCORRECT_PORT_ADDRESS;
+    
+    return ret;
 }
 
-void Gpio_InterruptEnable(void *port,Channel_num_t channel,uint8_t pinNum)
+status Gpio_InterruptEnable(void *port,Channel_num_t channel,uint8_t pinNum)
 {
+    status errorStatus,ret;
     Gpio_type_t type;
     type = GetPortType(port);
 
     if (type==PL_TYPE_GPIO)
     {   
-        PL_Gpio_GlobalInterruptEnable(port);
-        PL_Gpio_InterruptEnable(port,channel);
+        errorStatus = PL_Gpio_GlobalInterruptEnable(port);
+        if(errorStatus) ret = errorStatus;
+        else
+        {
+           errorStatus =  PL_Gpio_InterruptEnable(port,channel);
+           ret = errorStatus;
+        }
     }
     else if(type==PS_TYPE_GPIO)
     {
-        PS_Gpio_InterruptEnable(port,channel,pinNum);
+        errorStatus = PS_Gpio_InterruptEnable(port,channel,pinNum);
+        ret = errorStatus;
     }
+    return ret;
 }
 
-void Gpio_InterruptDisable(void *port,Channel_num_t channel,uint8_t pinNum)
+status Gpio_InterruptDisable(void *port,Channel_num_t channel,uint8_t pinNum)
 {
+    status errorStatus,ret;
     Gpio_type_t type;
     type = GetPortType(port);
 
     if (type==PL_TYPE_GPIO)
     {   
-       PL_Gpio_InterruptDisable(port,channel);
+      errorStatus = PL_Gpio_InterruptDisable(port,channel);
+      ret = errorStatus;
     }
     else if(type==PS_TYPE_GPIO)
     {
-        PS_Gpio_InterruptDisable(port,channel,pinNum);
+        errorStatus = PS_Gpio_InterruptDisable(port,channel,pinNum);
+        ret = errorStatus;
     }
+    return ret;
 }
 
-void Gpio_ClearInterrupt(void *port,Channel_num_t channel,uint8_t pinNum)
+status Gpio_ClearInterrupt(void *port,Channel_num_t channel,uint8_t pinNum)
 {
+    status errorStatus,ret;
     Gpio_type_t type;
     type = GetPortType(port);
 
     if (type==PL_TYPE_GPIO)
     {   
-       PL_Gpio_ClearInterrupt(port,channel);
+       errorStatus = PL_Gpio_ClearInterrupt(port,channel);
+       ret = errorStatus;
     }
     else if(type==PS_TYPE_GPIO)
     {
-        PS_Gpio_ClearInterrupt(port,channel,pinNum);
+        errorStatus = PS_Gpio_ClearInterrupt(port,channel,pinNum);
+        ret = errorStatus;
     }    
+    return ret;
+}
+
+status Gpio_SetInterruptType(void *port,Channel_num_t channel,uint8_t pinNum,Intr_type_t type)
+{
+    
+    status errorStatus,ret;
+    Gpio_type_t portType;
+    portType = GetPortType(port);
+
+    if(portType==PS_TYPE_GPIO)
+    {
+       errorStatus = PS_Gpio_SetInterruptType(port,channel,pinNum,type);
+       ret = errorStatus;
+    }
+    else ret = INCORRECT_PORT_ADDRESS;
+
+    return ret;
 
 }
+
 
 void Gpio_RegisterWrite(uint32_t Address, uint32_t Value)
 {
@@ -163,6 +205,6 @@ Gpio_type_t GetPortType(void *port)
         if(port==PL_Ports[i]) return PL_TYPE_GPIO;
     }
 
-    return INCORRECT_PORT_ADRESSS;
+    return INCORRECT_PORT_ADDRESS;
 
 }
